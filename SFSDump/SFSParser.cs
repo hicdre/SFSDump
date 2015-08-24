@@ -24,6 +24,14 @@ namespace SFSDump
             Writer = sw;
         }
 
+        public uint Seq
+        {
+            set
+            {
+                NextSeq = value;
+            }
+        }
+
         public void ReadBuffer(byte[] buffer, uint seq)
         {
             Sfs2X.Util.ByteArray data = new Sfs2X.Util.ByteArray(buffer);
@@ -41,32 +49,13 @@ namespace SFSDump
 
                 HandlePaddingPacket();
             }
-            else
+            else if (seq > NextSeq)
             {
                 PeddingBuffer[seq] = data;
-            }            
-        }               
+            }    
+            //去除retrans
+        }            
 
-        private void RendRespBuffer(byte[] buffer, uint seq)
-        {
-            Sfs2X.Util.ByteArray data = new Sfs2X.Util.ByteArray(buffer);
-            data.Position = 0;
-
-            if (NextSeq == 0 || NextSeq == seq)
-            {
-                NextSeq += (uint)data.Length;
-                if (!NeedsMoreData)
-                    HandleNewPacket(data);
-                else
-                    HandleContinuePacket(data);
-
-                HandlePaddingPacket();
-            }
-            else
-            {
-                PeddingBuffer[seq] = data;
-            }
-        }
 
         private void HandlePaddingPacket()
         {

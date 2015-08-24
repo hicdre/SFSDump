@@ -1,0 +1,8 @@
+﻿<Window x:Class="SFSDumpUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" AllowDrop="True" Drop="OnDropFile" DragEnter="OnDragFileEnter">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="161,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" AllowDrop="False"/>
+    </Grid>
+</Window>

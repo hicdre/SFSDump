@@ -44,5 +44,10 @@ ipch/
 *.vsp
 
 #################
+/Output/
 /SFSDump/bin/
 /SFSDump/obj/
+/SFSDumpConsole/bin/
+/SFSDumpConsole/obj/
+/SFSDumpUI/bin/
+/SFSDumpUI/obj/
