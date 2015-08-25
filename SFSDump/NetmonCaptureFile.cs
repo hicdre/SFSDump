@@ -381,6 +381,47 @@ namespace SFSDump
 
             return 0;
         }
+
+        public string GetPropertyString(string name)
+        {
+            if (this.Parser == null)
+                return null;
+
+            if (!this.Parser.HasProperty(name))
+                return null;
+
+
+            uint fieldId = this.Parser.Property(name);
+
+            uint ulLength = 255;
+            NmPropertyValueType vt;
+            unsafe
+            {
+                byte[] uintBuffer = new byte[255];
+                fixed (byte* pbuf = uintBuffer)
+                {
+                    uint ret = NetmonAPI.NmGetPropertyById(Parser.Handle, fieldId, ulLength, pbuf, out ulLength, out vt, 0, null);
+                    if (ret == 122 && vt == NmPropertyValueType.PropertyValueString)
+                    {
+                        uintBuffer = new byte[ulLength];
+                        fixed (byte* pbuf2 = uintBuffer)
+                        {
+                            if (0 == NetmonAPI.NmGetPropertyById(Parser.Handle, fieldId, ulLength, pbuf2, out ulLength, out vt, 0, null))
+                            {
+                                //uintBuffer.to
+                                return System.Text.Encoding.Unicode.GetString(uintBuffer, 0, (int)ulLength).Trim('\0');
+                            }
+                        }
+                    }
+                    else if (ret == 0 && vt == NmPropertyValueType.PropertyValueString)
+                    {
+                        return System.Text.Encoding.Unicode.GetString(uintBuffer, 0, (int)ulLength).Trim('\0');
+                    }                    
+                }               
+            }
+
+            return null;
+        }
     }
     public class NetmonCaptureFile
     {

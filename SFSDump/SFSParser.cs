@@ -121,8 +121,8 @@ namespace SFSDump
 
                 Sfs2X.Entities.Data.SFSObject obj = Sfs2X.Entities.Data.SFSObject.NewFromBinaryData(PendingPacket.Buffer);
                 string dumpstr = obj.GetDump();
-//                 Console.WriteLine(IsReq ? "req:" : "resp");
-//                 Console.WriteLine(dumpstr);
+                Console.WriteLine(IsReq ? "req:" : "resp");
+                Console.WriteLine(dumpstr);
 
                 Writer.WriteLine(IsReq ?    "req:==========================" 
                                         :   "resp:=========================");

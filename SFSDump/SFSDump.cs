@@ -35,6 +35,7 @@ namespace SFSDump
             parser.AddFiled("TCP.Flags");
             parser.AddFiled("IPv4.SourceAddress");
             parser.AddProperty("Property.TCPSeqNumber");
+            parser.AddProperty("Property.TCPCheckSumStatus");
 
             for (uint i = 0; i < file.FrameCount; i++)
             {
@@ -44,6 +45,11 @@ namespace SFSDump
                 byte[] address = frame.GetFieldBuffer("IPv4.SourceAddress");
 
                 if (address == null)
+                    continue;
+
+                string checksum = frame.GetPropertyString("Property.TCPCheckSumStatus");
+
+                if (checksum == "Bad")
                     continue;
 
                 bool isReq = (address[0] == 10 && address[1] == 10);
@@ -66,26 +72,6 @@ namespace SFSDump
                     byte[] buffer = frame.GetFieldBuffer("TCP.TCPPayload.TCPPayloadData");
                     if (buffer != null)
                     {
-
-                        //                         var packet = PacketDotNet.Packet.ParsePacket(PacketDotNet.LinkLayers.Ethernet, frame.Buffer);
-                        //                         var tcpPacket = PacketDotNet.TcpPacket.GetEncapsulated(packet);
-                        //                         if (tcpPacket != null)
-                        //                         {
-                        //                             if (tcpPacket.PayloadData != null)
-                        //                             {
-                        //                                 var ipPacket = (PacketDotNet.IpPacket)tcpPacket.ParentPacket;
-                        //                                 System.Net.IPAddress srcIp = ipPacket.SourceAddress;
-                        //                                 System.Net.IPAddress dstIp = ipPacket.DestinationAddress;
-                        //                                 int srcPort = tcpPacket.SourcePort;
-                        //                                 int dstPort = tcpPacket.DestinationPort;
-                        // 
-                        //                                 bool isReq = srcIp.ToString().StartsWith("192.168");
-                        //                                 if (isReq)
-                        //                                     reqParser.ReadBuffer(tcpPacket.PayloadData, tcpPacket.SequenceNumber);
-                        //                                 else
-                        //                                     respParser.ReadBuffer(tcpPacket.PayloadData, tcpPacket.SequenceNumber);
-                        //                             }
-                        //                         }
                         uint seq = frame.GetPropertyUint("Property.TCPSeqNumber");                        
 
                         if (isReq)
