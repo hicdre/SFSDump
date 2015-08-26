@@ -45,15 +45,18 @@ namespace SFSDump
                 byte[] address = frame.GetFieldBuffer("IPv4.SourceAddress");
 
                 if (address == null)
-                    continue;
-
-                string checksum = frame.GetPropertyString("Property.TCPCheckSumStatus");
-
-                if (checksum == "Bad")
-                    continue;
+                    continue;                                               
 
                 bool isReq = (address[0] == 10 && address[1] == 10);
 
+                if (!isReq)
+                {
+                    //某些情况下，请求的包的checksum交由网卡计算，导致此时抓包获取的checksum不正确，此时请求包应放行
+                    string checksum = frame.GetPropertyString("Property.TCPCheckSumStatus");
+                    if (checksum == "Bad")
+                        continue;
+                }
+                
 
                 {
                     byte flags = frame.GetFieldByte("TCP.Flags");
@@ -84,6 +87,7 @@ namespace SFSDump
             }
             sw.Close();
             fs.Close();
+            file.Close();
             return true;
         }
     }

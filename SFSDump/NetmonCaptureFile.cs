@@ -437,8 +437,14 @@ namespace SFSDump
 
         ~NetmonCaptureFile()
         {
+            Close();
+        }
+
+        public void Close()
+        {
             if (_fileHandle != IntPtr.Zero)
                 NetmonAPI.NmCloseHandle(_fileHandle);
+            _fileHandle = IntPtr.Zero;
         }
 
         public IntPtr Handle
